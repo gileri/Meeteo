@@ -2,8 +2,10 @@ package fr.badgers.meeteo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,11 +20,12 @@ import android.util.Log;
 public class Parser {
 	static public Parser parser;
 	
-	public Parser(){
-		
+	private static URL url = null;
+	
+	public Parser(String urlString){
 	}
 	
-	public static ArrayList getData(){
+	public static ArrayList getData(String urlString) throws IOException{
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser = null;
 		ArrayList entries = null;
@@ -37,9 +40,8 @@ public class Parser {
 			e.printStackTrace();
 		}
 		
-		URL url = null;
 		try {
-			url = new URL("http://api.yr.no/weatherapi/locationforecast/1.8/?lat=60.10;lon=9.58;msl=70");
+			url = new URL(urlString);
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
@@ -56,11 +58,9 @@ public class Parser {
 				entries = ((ParserXMLHandler) handler).getData();
 			}
 		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			Log.e("meeteo", "FUUUU1");
 			e.printStackTrace();
 		}
-
 		return entries;
 	}
 }

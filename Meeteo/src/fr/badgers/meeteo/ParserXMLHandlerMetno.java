@@ -8,19 +8,22 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-@SuppressWarnings("unused")
-public class ParserXMLHandler extends DefaultHandler{
+public class ParserXMLHandlerMetno extends DefaultHandler{
 
-	private final String CURR = "current_observation";
-	private final String TEMP_C = "temp_c";
+	private final String TIME = "time";
+	private final String FROM = "from";
+	private final String TO = "to";
+	private final String LOCATION = "location";
+	private final String TEMPERATURE = "temperature";
+	private final String TEMPVALUE = "value";
 	
-	private ArrayList <Condition> entries;
+	private ArrayList entries;
 	
-	private Condition currentWeather;
+	private WeatherEntryMetno currentWeather;
 	
 	//Boolean to know if we're in an item
-	private boolean inCurr;
-	private boolean inTemp;
+	private boolean inTime;
+	private boolean inLocation;
 	
 	//Buffer for data in XML tag
 	private StringBuffer buffer;
@@ -30,7 +33,7 @@ public class ParserXMLHandler extends DefaultHandler{
 		super.processingInstruction(target, data);
 	}
 
-	public ParserXMLHandler() {
+	public ParserXMLHandlerMetno() {
 		super();
 	}
 
@@ -44,7 +47,7 @@ public class ParserXMLHandler extends DefaultHandler{
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		entries = new ArrayList <Condition>();
+		entries = new ArrayList();
 	}
 
 	/*
@@ -60,10 +63,27 @@ public class ParserXMLHandler extends DefaultHandler{
 		// Ci dessous, localName contient le nom du tag rencontré
 
 		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau feed
-		if (localName.equalsIgnoreCase(CURR)){
-			inCurr = true;
-			currentWeather = new Condition();
+		if (localName.equalsIgnoreCase(TIME)){
+			this.currentWeather = new WeatherEntryMetno();
+			inTime = true;
+			for(int i=0; i < attributes.getLength() ; ++i){
+				if (attributes.getLocalName(i).equalsIgnoreCase(FROM))
+					this.currentWeather.setFrom(attributes.getValue(i));
+				if(attributes.getLocalName(i).equalsIgnoreCase(TO))
+					this.currentWeather.setTo(attributes.getValue(i));
 			}
+		}
+
+		// Vous pouvez définir des actions à effectuer pour chaque item rencontré
+		if (localName.equalsIgnoreCase(LOCATION)){
+			inLocation = true;
+		}
+		if (localName.equalsIgnoreCase(TEMPERATURE)){
+			for(int i=0; i < attributes.getLength() ; ++i){
+				if (attributes.getLocalName(i).equalsIgnoreCase(TEMPVALUE))
+					this.currentWeather.setTemperature(Float.valueOf(attributes.getValue(i)));
+			}
+		}
 	}
 
 	// * Fonction étant déclenchée lorsque le parser à parsé
@@ -84,16 +104,13 @@ public class ParserXMLHandler extends DefaultHandler{
 //			}
 //		}
 		
-
-		
-		if (localName.equalsIgnoreCase(TEMP_C)){
-			currentWeather.setTemperature(Float.valueOf(buffer.toString()));
-			inTemp = false;
+		if (localName.equalsIgnoreCase(LOCATION)){
+			inLocation = false;
 		}
 		
-		if (localName.equalsIgnoreCase(CURR)){
-			inCurr = false;
-			this.entries.add(currentWeather);
+		if (localName.equalsIgnoreCase(TIME)){
+			entries.add(currentWeather);
+			inTime = false;
 		}
 	}
 
@@ -109,7 +126,7 @@ public class ParserXMLHandler extends DefaultHandler{
 	}
 
 	// cette méthode nous permettra de récupérer les données
-	public ArrayList <Condition> getData(){
+	public ArrayList getData(){
 		return entries;
 	}
 }
