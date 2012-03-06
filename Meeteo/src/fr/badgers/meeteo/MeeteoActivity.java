@@ -1,95 +1,97 @@
 package fr.badgers.meeteo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MeeteoActivity extends Activity{
-    /** Called when the activity is first created. */
-	
+public class MeeteoActivity extends Activity {
+	/** Called when the activity is first created. */
+
 	TextView tempview = null;
 	Button b = null;
 	ImageView image;
-	
-	
-	private OnTouchListener appuibouton = new OnTouchListener() {
-		
+	Condition condition;
+	Toast toast;
+
+	private OnClickListener appuibouton = new OnClickListener() {
+
 		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			ArrayList<Condition> entries;
-			tempview = (TextView) findViewById(R.id.temp);
-			image = (ImageView) findViewById(R.id.imageView1);
+		public void onClick(View arg0) {
 			try {
-				entries = Parser.getData("http://api.wunderground.com/api/336d055766c22b31/geolookup/conditions/lang:FR/q/France/Aix-en-Provence.xml");
-				Log.e("meeteo", "PONEY");
-				tempview.setText(String.valueOf(entries.get(0).getTemperature()));
-		        downloadImage((ImageView) findViewById(R.id.imageView1), "http://icons.wxug.com/i/c/c/sunny.gif");
-			} catch (ConnectException e1) {
-				// TODO Connection Problem Catching
-				tempview.setText("N/A");
-				image.setImageDrawable(getResources().getDrawable(R.drawable.error));
-			} catch (UnknownHostException e) {
-				tempview.setText("N/A");
-				image.setImageDrawable(getResources().getDrawable(R.drawable.error));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				getData();
+			} catch (ConnexionException e) {
+				showDialog(R.layout.alert);
 			}
-			return false;
 		}
 	};
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        b = (Button) findViewById(R.id.button1);
-        b.setOnTouchListener(appuibouton);
-    }
-    
-    private void downloadImage(ImageView iv, String url) {
 
-    	Bitmap bitmap = null;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		tempview = (TextView) findViewById(R.id.temp);
+		image = (ImageView) findViewById(R.id.imageView1);
+		Button b = (Button) findViewById(R.id.button1);
+		b.setOnClickListener(appuibouton);
+	}
 
-    	try {
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		switch (id) {
 
-	    	URL urlImage = new URL(url);
-	
-	    	HttpURLConnection connection = (HttpURLConnection) urlImage.openConnection();
-	
-	    	InputStream inputStream = connection.getInputStream();
-	
-	    	bitmap = BitmapFactory.decodeStream(inputStream);
-	    	
-	    	iv.setImageBitmap(bitmap);
+		// Ici on peut définir plusieurs boites de dialogue diférentes
+		case R.layout.alert:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-    	} catch (MalformedURLException e) {
+			// On définit le message à afficher dans la boite de dialogue
+			builder.setMessage("Problème lors du téléchargement des données")
+					.setCancelable(false)
+					.setPositiveButton("Ok",
+							new DialogInterface.OnClickListener() {
 
-    	e.printStackTrace();
+								// On définit l'action pour le oui
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// On réessaie
+									dialog.cancel();
+								}
+							});
+			dialog = builder.create();
+			break;
 
-    	} catch (IOException e) {
+		default:
+			dialog = null;
+		}
+		return dialog;
 
-    	e.printStackTrace();
+	}
 
-    	}
-
-    	}
+	public void getData() throws ConnexionException {
+		Date cDate = new Date();
+		if (condition == null)
+			Log.v("meeteo", "Fuck you Java");
+		if (condition == null
+				|| (cDate.getTime() - condition.getLastRefresh().getTime() > 20000)) {
+			Log.v("meeteo", "Data get");
+			condition = Downloader.getCondition();
+			condition.setLastRefresh(cDate);
+			tempview.setText(String.valueOf(condition.getTemperature()));
+			Toast.makeText(getApplicationContext(), "Données actualisées", Toast.LENGTH_SHORT).show();;
+		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), "Pas si vite !", Toast.LENGTH_SHORT).show();;
+		}
+	}
 }
