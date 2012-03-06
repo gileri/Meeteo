@@ -87,11 +87,13 @@ public class MeeteoActivity extends Activity {
 			condition = Downloader.getCondition();
 			condition.setLastRefresh(cDate);
 			tempview.setText(String.valueOf(condition.getTemperature()));
-			Toast.makeText(getApplicationContext(), "Données actualisées", Toast.LENGTH_SHORT).show();;
-		}
-		else
-		{
-			Toast.makeText(getApplicationContext(), "Pas si vite !", Toast.LENGTH_SHORT).show();;
+			Toast.makeText(getApplicationContext(), "Données actualisées",
+					Toast.LENGTH_SHORT).show();
+			;
+		} else {
+			Toast.makeText(getApplicationContext(), "Pas si vite !",
+					Toast.LENGTH_SHORT).show();
+			;
 		}
 	}
 }

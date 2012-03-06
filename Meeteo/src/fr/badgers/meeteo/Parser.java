@@ -2,10 +2,8 @@ package fr.badgers.meeteo;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;

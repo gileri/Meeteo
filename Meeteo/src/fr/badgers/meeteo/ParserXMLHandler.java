@@ -6,27 +6,26 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-
 @SuppressWarnings("unused")
-public class ParserXMLHandler extends DefaultHandler{
+public class ParserXMLHandler extends DefaultHandler {
 
 	private final String CURR = "current_observation";
 	private final String TEMP_C = "temp_c";
-	
-	private ArrayList <Condition> entries;
-	
+
+	private ArrayList<Condition> entries;
+
 	private Condition currentWeather;
-	
-	//Boolean to know if we're in an item
+
+	// Boolean to know if we're in an item
 	private boolean inCurr;
 	private boolean inTemp;
-	
-	//Buffer for data in XML tag
+
+	// Buffer for data in XML tag
 	private StringBuffer buffer;
-	
+
 	@Override
-	public void processingInstruction(String target, String data) throws SAXException {
+	public void processingInstruction(String target, String data)
+			throws SAXException {
 		super.processingInstruction(target, data);
 	}
 
@@ -44,26 +43,28 @@ public class ParserXMLHandler extends DefaultHandler{
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		entries = new ArrayList <Condition>();
+		entries = new ArrayList<Condition>();
 	}
 
 	/*
-	 * Fonction étant déclenchée lorsque le parser trouve un tag XML
-	 * C'est cette méthode que nous allons utiliser pour instancier un nouveau feed
- 	*/
-	
+	 * Fonction étant déclenchée lorsque le parser trouve un tag XML C'est cette
+	 * méthode que nous allons utiliser pour instancier un nouveau feed
+	 */
+
 	@Override
-	public void startElement(String uri, String localName, String name,	Attributes attributes) throws SAXException {
+	public void startElement(String uri, String localName, String name,
+			Attributes attributes) throws SAXException {
 		// Nous réinitialisons le buffer a chaque fois qu'il rencontre un item
-		buffer = new StringBuffer();		
+		buffer = new StringBuffer();
 
 		// Ci dessous, localName contient le nom du tag rencontré
 
-		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau feed
-		if (localName.equalsIgnoreCase(CURR)){
+		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau
+		// feed
+		if (localName.equalsIgnoreCase(CURR)) {
 			inCurr = true;
 			currentWeather = new Condition();
-			}
+		}
 	}
 
 	// * Fonction étant déclenchée lorsque le parser à parsé
@@ -74,24 +75,23 @@ public class ParserXMLHandler extends DefaultHandler{
 	// * notre objet currentFeed
 
 	@Override
-	public void endElement(String uri, String localName, String name) throws SAXException {		
+	public void endElement(String uri, String localName, String name)
+			throws SAXException {
 
-//		if (localName.equalsIgnoreCase(TITLE)){
-//			if(inItem){
-//				// Les caractères sont dans l'objet buffer
-//				this.currentFeed.setTitle(buffer.toString());
-//				buffer = null;
-//			}
-//		}
-		
+		// if (localName.equalsIgnoreCase(TITLE)){
+		// if(inItem){
+		// // Les caractères sont dans l'objet buffer
+		// this.currentFeed.setTitle(buffer.toString());
+		// buffer = null;
+		// }
+		// }
 
-		
-		if (localName.equalsIgnoreCase(TEMP_C)){
+		if (localName.equalsIgnoreCase(TEMP_C)) {
 			currentWeather.setTemperature(Float.valueOf(buffer.toString()));
 			inTemp = false;
 		}
-		
-		if (localName.equalsIgnoreCase(CURR)){
+
+		if (localName.equalsIgnoreCase(CURR)) {
 			inCurr = false;
 			this.entries.add(currentWeather);
 		}
@@ -103,13 +103,15 @@ public class ParserXMLHandler extends DefaultHandler{
 	// * par la présence de texte entre la balise d'ouverture et
 	// * la balise de fermeture
 
-	public void characters(char[] ch,int start, int length)	throws SAXException{
-		String lecture = new String(ch,start,length);
-		if(buffer != null) buffer.append(lecture);
+	public void characters(char[] ch, int start, int length)
+			throws SAXException {
+		String lecture = new String(ch, start, length);
+		if (buffer != null)
+			buffer.append(lecture);
 	}
 
 	// cette méthode nous permettra de récupérer les données
-	public ArrayList <Condition> getData(){
+	public ArrayList<Condition> getData() {
 		return entries;
 	}
 }
