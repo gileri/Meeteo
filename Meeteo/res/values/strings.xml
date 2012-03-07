@@ -4,5 +4,6 @@
     <string name="hello">N/A</string>
     <string name="app_name">Meeteo</string>
     <string name="refresh">Actualiser</string>
+    <string name="hintsearchlocation">Nouveau lieu</string>
 
 </resources>

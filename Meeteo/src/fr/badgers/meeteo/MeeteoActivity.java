@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MeeteoActivity extends Activity {
-	/** Called when the activity is first created. */
+	
 
 	TextView tempview = null;
 	Button b = null;
@@ -35,7 +35,8 @@ public class MeeteoActivity extends Activity {
 			}
 		}
 	};
-
+	
+	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,14 +80,13 @@ public class MeeteoActivity extends Activity {
 
 	public void getData() throws ConnexionException {
 		Date cDate = new Date();
-		if (condition == null)
-			Log.v("meeteo", "Fuck you Java");
 		if (condition == null
 				|| (cDate.getTime() - condition.getLastRefresh().getTime() > 20000)) {
-			Log.v("meeteo", "Data get");
 			condition = Downloader.getCondition();
 			condition.setLastRefresh(cDate);
-			tempview.setText(String.valueOf(condition.getTemperature()));
+			tempview.setText(condition.getConditionString());
+			condition.setImage(Downloader.getBitmap(condition.getImageurlstring()));
+			image.setImageBitmap(condition.getImage());
 			Toast.makeText(getApplicationContext(), "Données actualisées",
 					Toast.LENGTH_SHORT).show();
 			;

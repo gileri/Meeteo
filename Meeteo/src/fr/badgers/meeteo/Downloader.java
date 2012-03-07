@@ -26,10 +26,6 @@ public class Downloader {
 	}
 
 	public static Bitmap getBitmap(String url) throws ConnexionException {
-
-		if (downloader == null) {
-			downloader = new Downloader();
-		}
 		try {
 			URL urlImage = new URL(url);
 			HttpURLConnection connection = (HttpURLConnection) urlImage
@@ -43,6 +39,5 @@ public class Downloader {
 		} catch (IOException e) {
 			throw new ConnexionException();
 		}
-
 	}
 }

@@ -19,6 +19,7 @@ public class Parser {
 	static public Parser parser;
 	
 	private static URL url = null;
+	//private DefaultHandler handler;
 	
 	public Parser(String urlString){
 	}
@@ -44,7 +45,7 @@ public class Parser {
 			e1.printStackTrace();
 		}
 		
-		DefaultHandler handler = new ParserXMLHandler();
+		DefaultHandler handler = new ParserXMLHandlerCC();
 		try {
 			// On parse le fichier XML
 			InputStream input = url.openStream();
@@ -53,7 +54,7 @@ public class Parser {
 			else{
 				parser.parse(input, handler);
 				// On récupère directement la liste des feeds
-				entries = ((ParserXMLHandler) handler).getData();
+				entries = ((ParserXMLHandlerCC) handler).getData();
 			}
 		} catch (SAXException e) {
 			Log.e("meeteo", "FUUUU1");
