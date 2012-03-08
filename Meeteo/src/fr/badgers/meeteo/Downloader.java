@@ -24,6 +24,17 @@ public class Downloader {
 			throw new ConnexionException();
 		}
 	}
+	
+	public static ArrayList<Condition> getLocations(String query) throws ConnexionException {
+		try {
+			ArrayList<Condition> entries;
+			entries = ParserGeoLookup
+					.getData("http://api.wunderground.com/api/336d055766c22b31/geolookup/q/" + query + ".xml");
+			return entries;
+		} catch (IOException e) {
+			throw new ConnexionException();
+		}
+	}
 
 	public static Bitmap getBitmap(String url) throws ConnexionException {
 		try {

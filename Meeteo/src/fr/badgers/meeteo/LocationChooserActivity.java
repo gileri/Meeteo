@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 
 public class LocationChooserActivity extends Activity{
@@ -33,12 +36,18 @@ public class LocationChooserActivity extends Activity{
 			@Override
 			public void afterTextChanged(Editable s) {
 				currlocation = s;
-				searchLocation();
 			}
 		});
-	}
-	public void searchLocation()
-	{
-		//Download, Parse, and give a list of possible locations;
+		
+		
+		findViewById(R.id.geolookupbutton).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				//TODO :Download, Parse, and give a list of possible locations;
+				
+			}
+		});
+		
 	}
 }

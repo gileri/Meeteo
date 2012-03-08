@@ -9,20 +9,20 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 @SuppressWarnings("unused")
-public class ParserXMLHandlerCC extends DefaultHandler {
+public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 
-	private final String CURR = "current_observation";
-	private final String TEMP_C = "temp_c";
-	private final String URLIMAGE = "icon_url";
-	private final String WEATHER = "weather";
+	private final String ERROR = "error";
+	private final String WMO = "wmo";
+	private final String CITY = "city";
+	private final String COUNTRY= "country_name";
+	
+	private ArrayList<Location> entries;
 
-	private ArrayList<Condition> entries;
-
-	private Condition currentWeather;
+	private Location currentLocation;
 
 	// Boolean to know if we're in an item
 	private boolean inCurr;
-	private boolean inTemp;
+	private boolean error;
 
 	// Buffer for data in XML tag
 	private StringBuffer buffer;
@@ -33,7 +33,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		super.processingInstruction(target, data);
 	}
 
-	public ParserXMLHandlerCC() {
+	public ParserXMLHandlerGeoLookup() {
 		super();
 	}
 
@@ -47,7 +47,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		entries = new ArrayList<Condition>();
+		entries = new ArrayList<Location>();
 	}
 
 	/*
@@ -65,9 +65,8 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 
 		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau
 		// feed
-		if (localName.equalsIgnoreCase(CURR)) {
-			inCurr = true;
-			currentWeather = new Condition();
+		if (localName.equalsIgnoreCase(ERROR)) {
+			error = true;
 		}
 	}
 
@@ -89,25 +88,14 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		// buffer = null;
 		// }
 		// }
-
-		if (localName.equalsIgnoreCase(TEMP_C)) {
-			currentWeather.setTemperature(Float.valueOf(buffer.toString()));
-			inTemp = false;
+		if (localName.equalsIgnoreCase(CITY))
+		{
+			currentLocation.setName(buffer.toString());
 		}
 		
-		if (localName.equalsIgnoreCase(URLIMAGE))
+		if (localName.equalsIgnoreCase(COUNTRY))
 		{
-			currentWeather.setImageUrlString(buffer.toString());
-		}
-		
-		if (localName.equalsIgnoreCase(WEATHER))
-		{
-			currentWeather.setDescription(buffer.toString());
-		}
-
-		if (localName.equalsIgnoreCase(CURR)) {
-			inCurr = false;
-			this.entries.add(currentWeather);
+			currentLocation.setCountry(buffer.toString());
 		}
 	}
 
@@ -125,7 +113,9 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	}
 
 	// cette méthode nous permettra de récupérer les données
-	public ArrayList<Condition> getData() {
+	public ArrayList<Location> getData() {
+		if (error)
+			return null;
 		return entries;
 	}
 }
