@@ -37,12 +37,12 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		super();
 	}
 
-	// * Cette méthode est appelée par le parser une et une seule
-	// * fois au démarrage de l'analyse de votre flux xml.
-	// * Elle est appelée avant toutes les autres méthodes de l'interface,
-	// * à l'exception unique, évidemment, de la méthode setDocumentLocator.
-	// * Cet événement devrait vous permettre d'initialiser tout ce qui doit
-	// * l'être avant ledébut du parcours du document.
+	// * Cette mÃ©thode est appelÃ©e par le parser une et une seule
+	// * fois au dÃ©marrage de l'analyse de votre flux xml.
+	// * Elle est appelÃ©e avant toutes les autres mÃ©thodes de l'interface,
+	// * Ã  l'exception unique, Ã©videmment, de la mÃ©thode setDocumentLocator.
+	// * Cet Ã©vÃ©nement devrait vous permettre d'initialiser tout ce qui doit
+	// * l'Ãªtre avant ledÃ©but du parcours du document.
 
 	@Override
 	public void startDocument() throws SAXException {
@@ -51,19 +51,19 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	}
 
 	/*
-	 * Fonction étant déclenchée lorsque le parser trouve un tag XML C'est cette
-	 * méthode que nous allons utiliser pour instancier un nouveau feed
+	 * Fonction Ã©tant dÃ©clenchÃ©e lorsque le parser trouve un tag XML C'est cette
+	 * mÃ©thode que nous allons utiliser pour instancier un nouveau feed
 	 */
 
 	@Override
 	public void startElement(String uri, String localName, String name,
 			Attributes attributes) throws SAXException {
-		// Nous réinitialisons le buffer a chaque fois qu'il rencontre un item
+		// Nous rÃ©initialisons le buffer a chaque fois qu'il rencontre un item
 		buffer = new StringBuffer();
 
-		// Ci dessous, localName contient le nom du tag rencontré
+		// Ci dessous, localName contient le nom du tag rencontrÃ©
 
-		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau
+		// Nous avons rencontrÃ© un tag ITEM, il faut donc instancier un nouveau
 		// feed
 		if (localName.equalsIgnoreCase(CURR)) {
 			inCurr = true;
@@ -71,11 +71,11 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		}
 	}
 
-	// * Fonction étant déclenchée lorsque le parser à parsé
-	// * l'intérieur de la balise XML La méthode characters
-	// * a donc fait son ouvrage et tous les caractère inclus
-	// * dans la balise en cours sont copiés dans le buffer
-	// * On peut donc tranquillement les récupérer pour compléter
+	// * Fonction Ã©tant dÃ©clenchÃ©e lorsque le parser Ã  parsÃ©
+	// * l'intÃ©rieur de la balise XML La mÃ©thode characters
+	// * a donc fait son ouvrage et tous les caractÃ¨re inclus
+	// * dans la balise en cours sont copiÃ©s dans le buffer
+	// * On peut donc tranquillement les rÃ©cupÃ©rer pour complÃ©ter
 	// * notre objet currentFeed
 
 	@Override
@@ -84,7 +84,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 
 		// if (localName.equalsIgnoreCase(TITLE)){
 		// if(inItem){
-		// // Les caractères sont dans l'objet buffer
+		// // Les caractÃ¨res sont dans l'objet buffer
 		// this.currentFeed.setTitle(buffer.toString());
 		// buffer = null;
 		// }
@@ -112,9 +112,9 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	}
 
 	// * Tout ce qui est dans l'arborescence mais n'est pas partie
-	// * intégrante d'un tag, déclenche la levée de cet événement.
-	// * En général, cet événement est donc levé tout simplement
-	// * par la présence de texte entre la balise d'ouverture et
+	// * intÃ©grante d'un tag, dÃ©clenche la levÃ©e de cet Ã©vÃ©nement.
+	// * En gÃ©nÃ©ral, cet Ã©vÃ©nement est donc levÃ© tout simplement
+	// * par la prÃ©sence de texte entre la balise d'ouverture et
 	// * la balise de fermeture
 
 	public void characters(char[] ch, int start, int length)
@@ -124,7 +124,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 			buffer.append(lecture);
 	}
 
-	// cette méthode nous permettra de récupérer les données
+	// cette mÃ©thode nous permettra de rÃ©cupÃ©rer les donnÃ©es
 	public ArrayList<Condition> getData() {
 		return entries;
 	}

@@ -53,7 +53,7 @@ public class ParserGeoLookup {
 				Log.e("erreur android","null");
 			else{
 				parser.parse(input, handler);
-				// On récupère directement la liste des feeds
+				// On rÃ©cupÃ¨re directement la liste des feeds
 				entries = ((ParserXMLHandlerGeoLookup) handler).getData();
 			}
 		} catch (SAXException e) {

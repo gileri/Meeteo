@@ -51,20 +51,20 @@ public class MeeteoActivity extends Activity {
 		Dialog dialog = null;
 		switch (id) {
 
-		// Ici on peut définir plusieurs boites de dialogue diférentes
+		// Ici on peut dÃ©finir plusieurs boites de dialogue difÃ©rentes
 		case R.layout.alert:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-			// On définit le message à afficher dans la boite de dialogue
-			builder.setMessage("Problème lors du téléchargement des données")
+			// On dÃ©finit le message Ã  afficher dans la boite de dialogue
+			builder.setMessage("ProblÃ¨me lors du tÃ©lÃ©chargement des donnÃ©es")
 					.setCancelable(false)
 					.setPositiveButton("Ok",
 							new DialogInterface.OnClickListener() {
 
-								// On définit l'action pour le oui
+								// On dÃ©finit l'action pour le oui
 								public void onClick(DialogInterface dialog,
 										int id) {
-									// On réessaie
+									// On rÃ©essaie
 									dialog.cancel();
 								}
 							});
@@ -87,7 +87,7 @@ public class MeeteoActivity extends Activity {
 			tempview.setText(condition.getConditionString());
 			condition.setImage(Downloader.getBitmap(condition.getImageurlstring()));
 			image.setImageBitmap(condition.getImage());
-			Toast.makeText(getApplicationContext(), "Données actualisées",
+			Toast.makeText(getApplicationContext(), "DonnÃ©es actualisÃ©es",
 					Toast.LENGTH_SHORT).show();
 			;
 		} else {

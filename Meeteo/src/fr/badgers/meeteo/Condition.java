@@ -17,7 +17,7 @@ public class Condition {
 	
 	public String getConditionString() {
 		if (conditionString == null)
-			conditionString = new String(description + ", " + temperature + " °C");
+			conditionString = new String(description + ", " + temperature + " Â°C");
 		return conditionString;
 	}
 
