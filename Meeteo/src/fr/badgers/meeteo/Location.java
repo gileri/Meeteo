@@ -1,13 +1,23 @@
 package fr.badgers.meeteo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Location {
+public class Location implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String link;
 	private String name;
 	private Date lastUpdate;
 	private String country;
 	
+	@Override
+	public String toString() {
+		return "Location [link=" + link + ", name=" + name + ", lastUpdate="
+				+ lastUpdate + ", country=" + country + "]";
+	}
 	public String getCountry() {
 		return country;
 	}

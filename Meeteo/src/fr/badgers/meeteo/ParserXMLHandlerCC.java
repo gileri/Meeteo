@@ -1,7 +1,5 @@
 package fr.badgers.meeteo;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;

@@ -9,28 +9,29 @@ import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class Downloader {
 
 	static public Downloader downloader = null;
 
-	public static Condition getCondition() throws ConnexionException {
+	public static Condition getCondition(Location l) throws ConnexionException {
 		try {
 			ArrayList<Condition> entries;
+			Log.v("meeteo", l.toString());
+			Log.v("meeteo", l.getLink());
 			entries = Parser
-					.getData("http://88.190.232.239/Aix-en-Provence.xml");
+					.getData("http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/" + l.getLink() + ".xml");
 			return entries.get(0);
 		} catch (IOException e) {
 			throw new ConnexionException();
 		}
 	}
 	
-	public static ArrayList<Condition> getLocations(String query) throws ConnexionException {
+	public static ArrayList<Location> getLocations(String query) throws ConnexionException {
 		try {
-			ArrayList<Condition> entries;
-			entries = ParserGeoLookup
-					.getData("http://api.wunderground.com/api/336d055766c22b31/geolookup/q/" + query + ".xml");
-			return entries;
+			return ParserGeoLookup
+					.getData("http://autocomplete.wunderground.com/aq?query=" + query + "&format=xml&c=FR");
 		} catch (IOException e) {
 			throw new ConnexionException();
 		}

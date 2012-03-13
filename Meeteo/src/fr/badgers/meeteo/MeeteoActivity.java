@@ -6,8 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -23,6 +23,8 @@ public class MeeteoActivity extends Activity {
 	ImageView image;
 	Condition condition;
 	Toast toast;
+	Bundle bu;
+	Location l;
 
 	private OnClickListener appuibouton = new OnClickListener() {
 
@@ -40,11 +42,18 @@ public class MeeteoActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		
+		if (this.getIntent().getExtras() != null) {
+			bu = this.getIntent().getExtras();
+			l = (Location) bu.getSerializable("location");
+		}
+		
+		setContentView(R.layout.condition);
 		tempview = (TextView) findViewById(R.id.temp);
 		image = (ImageView) findViewById(R.id.imageView1);
 		Button b = (Button) findViewById(R.id.button1);
 		b.setOnClickListener(appuibouton);
+		
 	}
 
 	protected Dialog onCreateDialog(int id) {
@@ -82,7 +91,7 @@ public class MeeteoActivity extends Activity {
 		Date cDate = new Date();
 		if (condition == null
 				|| (cDate.getTime() - condition.getLastRefresh().getTime() > 20000)) {
-			condition = Downloader.getCondition();
+			condition = Downloader.getCondition(l);
 			condition.setLastRefresh(cDate);
 			tempview.setText(condition.getConditionString());
 			condition.setImage(Downloader.getBitmap(condition.getImageurlstring()));

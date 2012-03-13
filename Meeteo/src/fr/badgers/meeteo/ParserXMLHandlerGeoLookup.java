@@ -1,27 +1,22 @@
 package fr.badgers.meeteo;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-@SuppressWarnings("unused")
 public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 
 	private final String ERROR = "error";
-	private final String WMO = "wmo";
-	private final String CITY = "city";
-	private final String COUNTRY= "country_name";
+	private final String LINK = "l";
+	private final String CITY = "name";
+	private final String COUNTRY= "c";
 	
 	private ArrayList<Location> entries;
 
 	private Location currentLocation;
 
-	// Boolean to know if we're in an item
-	private boolean inCurr;
 	private boolean error;
 
 	// Buffer for data in XML tag
@@ -61,12 +56,12 @@ public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 		// Nous réinitialisons le buffer a chaque fois qu'il rencontre un item
 		buffer = new StringBuffer();
 
-		// Ci dessous, localName contient le nom du tag rencontré
-
-		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau
-		// feed
 		if (localName.equalsIgnoreCase(ERROR)) {
 			error = true;
+		}
+		
+		if (localName.equalsIgnoreCase(CITY)) {
+			currentLocation = new Location();
 		}
 	}
 
@@ -96,6 +91,12 @@ public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 		if (localName.equalsIgnoreCase(COUNTRY))
 		{
 			currentLocation.setCountry(buffer.toString());
+		}
+		
+		if (localName.equalsIgnoreCase(LINK))
+		{
+			currentLocation.setLink(buffer.toString());
+			entries.add(currentLocation);
 		}
 	}
 
