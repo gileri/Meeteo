@@ -91,10 +91,10 @@ public class MeeteoActivity extends Activity {
 		Date cDate = new Date();
 		if (condition == null
 				|| (cDate.getTime() - condition.getLastRefresh().getTime() > 20000)) {
-			condition = Downloader.getCondition(l);
+			condition = ConditionDownloader.getCondition(l);
 			condition.setLastRefresh(cDate);
 			tempview.setText(condition.getConditionString());
-			condition.setImage(Downloader.getBitmap(condition.getImageurlstring()));
+			condition.setImage(ConditionDownloader.getBitmap(condition.getImageurlstring()));
 			image.setImageBitmap(condition.getImage());
 			Toast.makeText(getApplicationContext(), "Données actualisées",
 					Toast.LENGTH_SHORT).show();
@@ -105,4 +105,5 @@ public class MeeteoActivity extends Activity {
 			;
 		}
 	}
+
 }
