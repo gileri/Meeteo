@@ -91,7 +91,6 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 					lStrings.add(l.getName());
 				return (ArrayList<Location>) locations;
 			} catch (IOException e) {
-				Log.v("meeteo", "fu u");
 				return null;
 			}
 			
