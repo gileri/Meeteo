@@ -1,13 +1,14 @@
 package fr.badgers.meeteo;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,18 +16,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class LocationChooserActivity extends Activity implements View.OnClickListener{
 	
-	private List <Location> locations;
+	private List<Location> locations;
 	private String currlocation;
 	private ListView locationView;
+	private List<String> lStrings;
+	private Toast Toast;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 
 	@Override
 	public void onClick(View v) {
+<<<<<<< HEAD
 		
 		try {
 			locations = Downloader.getLocations(currlocation);
@@ -82,6 +84,12 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 		return ErrorDialog.createDialog(this, id);
 	}
 
+=======
+		LocationDownloader ld = new LocationDownloader();
+		ld.execute(currlocation);
+	}
+	
+>>>>>>> 9f871493edee854df12d01d9db33970ec8daada1
 	private void goToCC(Location l)
 	{
 		Bundle bundle = new Bundle();
@@ -89,5 +97,34 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 		Intent newIntent = new Intent(this.getApplicationContext(), MeeteoActivity.class);
 		newIntent.putExtras(bundle);
 		startActivityForResult(newIntent, 0);
+	}
+	
+	private class LocationDownloader extends AsyncTask<String, Void, ArrayList<Location>>
+	{
+
+		@Override
+		protected ArrayList<Location> doInBackground(String... params) {
+			try {
+				locations = ParserGeoLookup
+				.getData("http://autocomplete.wunderground.com/aq?query=" + params[0] + "&format=xml&c=FR");
+				lStrings = new ArrayList<String>();
+				for (Location l : locations)
+					lStrings.add(l.getName());
+				return (ArrayList<Location>) locations;
+			} catch (IOException e) {
+				return null;
+			}
+			
+		}
+		protected void onPostExecute(ArrayList<Location> result) {
+			Log.v("meeteo", String.valueOf(lStrings.size()));
+			if (lStrings.size() != 0)
+				((ListView) findViewById(R.id.listView1)).setAdapter(
+						new ArrayAdapter<String>(LocationChooserActivity.this, android.R.layout.simple_list_item_1, lStrings));
+			else
+				Toast.makeText(getApplicationContext(), "Aucune ville trouvée",
+						Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 }
