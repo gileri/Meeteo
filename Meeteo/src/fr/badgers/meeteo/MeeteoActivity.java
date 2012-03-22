@@ -72,13 +72,7 @@ public class MeeteoActivity extends Activity {
 				|| (cDate.getTime() - condition.getLastRefresh().getTime() > 20000)) {
 			condition = ConditionDownloader.getCondition(l);
 			condition.setLastRefresh(cDate);
-<<<<<<< HEAD
 			condition.setImage(Downloader.getBitmap(condition.getImageurlstring()));
-=======
-			tempview.setText(condition.getConditionString());
-			condition.setImage(ConditionDownloader.getBitmap(condition.getImageurlstring()));
-			image.setImageBitmap(condition.getImage());
->>>>>>> 9f871493edee854df12d01d9db33970ec8daada1
 			Toast.makeText(getApplicationContext(), "Données actualisées",
 					Toast.LENGTH_SHORT).show();
 			List<Condition> forecastlist = new ArrayList<Condition>();

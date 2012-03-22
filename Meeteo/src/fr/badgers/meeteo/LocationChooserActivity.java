@@ -66,30 +66,10 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 
 	@Override
 	public void onClick(View v) {
-<<<<<<< HEAD
-		
-		try {
-			locations = Downloader.getLocations(currlocation);
-			List<String> lStrings = new ArrayList<String>();
-			for (Location l : locations)
-				lStrings.add(l.getName());
-			((ListView) findViewById(R.id.listView1)).setAdapter(
-					new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lStrings));
-		} catch (ConnexionException e) {
-			showDialog(ErrorDialog.CONNECTION);
-		}
-	}
-	
-	protected Dialog onCreateDialog(int id) {
-		return ErrorDialog.createDialog(this, id);
-	}
-
-=======
 		LocationDownloader ld = new LocationDownloader();
 		ld.execute(currlocation);
 	}
 	
->>>>>>> 9f871493edee854df12d01d9db33970ec8daada1
 	private void goToCC(Location l)
 	{
 		Bundle bundle = new Bundle();
