@@ -18,8 +18,6 @@ public class Downloader {
 	public static Condition getCondition(Location l) throws ConnexionException {
 		try {
 			ArrayList<Condition> entries;
-			Log.v("meeteo", l.toString());
-			Log.v("meeteo", l.getLink());
 			entries = Parser
 					.getData("http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/" + l.getLink() + ".xml");
 			return entries.get(0);

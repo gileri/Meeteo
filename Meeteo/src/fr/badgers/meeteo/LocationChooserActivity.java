@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -73,10 +74,14 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 			((ListView) findViewById(R.id.listView1)).setAdapter(
 					new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lStrings));
 		} catch (ConnexionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			showDialog(ErrorDialog.CONNECTION);
 		}
 	}
+	
+	protected Dialog onCreateDialog(int id) {
+		return ErrorDialog.createDialog(this, id);
+	}
+
 	private void goToCC(Location l)
 	{
 		Bundle bundle = new Bundle();
