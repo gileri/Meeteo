@@ -97,7 +97,6 @@ public class LocationChooserActivity extends Activity implements View.OnClickLis
 			
 		}
 		protected void onPostExecute(ArrayList<Location> result) {
-			Log.v("meeteo", String.valueOf(lStrings.size()));
 			if (lStrings.size() != 0)
 				((ListView) findViewById(R.id.listView1)).setAdapter(
 						new ArrayAdapter<String>(LocationChooserActivity.this, android.R.layout.simple_list_item_1, lStrings));

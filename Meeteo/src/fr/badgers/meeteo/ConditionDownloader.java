@@ -14,8 +14,6 @@ import android.util.Log;
 
 public class ConditionDownloader extends AsyncTask<Location, Integer, Condition> {
 
-	static public ConditionDownloader downloader = null;
-
 	public static Condition getCondition(Location l) throws ConnexionException {
 		try {
 			ArrayList<Condition> entries;
@@ -29,37 +27,10 @@ public class ConditionDownloader extends AsyncTask<Location, Integer, Condition>
 		}
 	}
 	
-	public static ArrayList<Location> getLocations(String query) throws ConnexionException {
-		try {
-			return ParserGeoLookup
-					.getData("http://autocomplete.wunderground.com/aq?query=" + query + "&format=xml&c=FR");
-		} catch (IOException e) {
-			throw new ConnexionException();
-		}
-	}
-
-	public static Bitmap getBitmap(String url) throws ConnexionException {
-		try {
-			URL urlImage = new URL(url);
-			HttpURLConnection connection = (HttpURLConnection) urlImage
-					.openConnection();
-			InputStream inputStream = connection.getInputStream();
-			return BitmapFactory.decodeStream(inputStream);
-
-		} catch (MalformedURLException e) {
-			throw new ConnexionException();
-
-		} catch (IOException e) {
-			throw new ConnexionException();
-		}
-	}
-
 	@Override
 	protected Condition doInBackground(Location... arg0) {
 		ArrayList<Condition> entries = null;
 		try {
-			Log.v("meeteo", ((Location)arg0[0]).toString());
-			Log.v("meeteo", ((Location) arg0[0]).getLink());
 			entries = Parser
 					.getData("http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/" + arg0[0].getLink() + ".xml");
 			return entries.get(0);

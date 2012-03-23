@@ -13,29 +13,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class LocationDownloader extends AsyncTask<String, Integer, ArrayList<Location>> {
-
-	static public LocationDownloader downloader = null;
 	
 	public static ArrayList<Location> getLocations(String query) throws ConnexionException {
 		try {
 			return ParserGeoLookup
 					.getData("http://autocomplete.wunderground.com/aq?query=" + query + "&format=xml&c=FR");
-		} catch (IOException e) {
-			throw new ConnexionException();
-		}
-	}
-
-	public static Bitmap getBitmap(String url) throws ConnexionException {
-		try {
-			URL urlImage = new URL(url);
-			HttpURLConnection connection = (HttpURLConnection) urlImage
-					.openConnection();
-			InputStream inputStream = connection.getInputStream();
-			return BitmapFactory.decodeStream(inputStream);
-
-		} catch (MalformedURLException e) {
-			throw new ConnexionException();
-
 		} catch (IOException e) {
 			throw new ConnexionException();
 		}

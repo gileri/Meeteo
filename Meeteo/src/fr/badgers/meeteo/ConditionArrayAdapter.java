@@ -35,6 +35,9 @@ public class ConditionArrayAdapter extends ArrayAdapter<Condition> {
 		}
 
 		// Get element to display
+		
+		Log.v("meeteo", getItem(position).toString());
+		
 		Condition cond = getItem(position);
 
 		// Get references to view components

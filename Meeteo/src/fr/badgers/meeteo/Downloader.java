@@ -41,6 +41,7 @@ public class Downloader {
 			HttpURLConnection connection = (HttpURLConnection) urlImage
 					.openConnection();
 			InputStream inputStream = connection.getInputStream();
+			
 			return BitmapFactory.decodeStream(inputStream);
 
 		} catch (MalformedURLException e) {
