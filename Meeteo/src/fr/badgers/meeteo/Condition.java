@@ -13,8 +13,17 @@ public class Condition {
 	private String imageurlstring;
 	private String description;
 	private String conditionString;
+	private Date date;
 	
 	
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 	public String getConditionString() {
 		if (conditionString == null)
 			conditionString = new String(description + ", " + temperature + " °C");
