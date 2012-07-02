@@ -1,109 +1,54 @@
 package fr.badgers.meeteo;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
-public class LocationChooserActivity extends Activity implements View.OnClickListener{
-	
-	private List<Location> locations;
-	private String currlocation;
-	private ListView locationView;
-	private List<String> lStrings;
+public class LocationChooserActivity extends FragmentActivity {
+
 	private Toast Toast;
-	
+	private ViewPager mViewPager;
+	public List<Fragment> fragments;
+	private PagerAdapter mPagerAdapter;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.locationchooser);
-		((EditText) findViewById(R.id.searchlocationfield)).addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				currlocation = s.toString();
-			}
-		});
+		super.setContentView(R.layout.locations);
+		fragments = new Vector<Fragment>();
+		fragments.add(Fragment.instantiate(this,
+				SavedLocationsFragment.class.getName()));
+		fragments.add(Fragment.instantiate(this,
+				SearchLocationFragment.class.getName()));
 
-		((ImageButton) findViewById(R.id.geolookupbutton)).setOnClickListener(this);
-		locationView = ((ListView) findViewById(R.id.listView1));
-		locationView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View view, int position,
-					long id) {
-				goToCC(locations.get(position));
-				
-			}
-		});
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
+		mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager());
+		mViewPager.setAdapter(mPagerAdapter);
 	}
 
-	@Override
-	public void onClick(View v) {
-		LocationDownloader ld = new LocationDownloader();
-		ld.execute(currlocation);
-	}
-	
-	private void goToCC(Location l)
-	{
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("location", (Serializable) l);
-		Intent newIntent = new Intent(this.getApplicationContext(), MeeteoActivity.class);
-		newIntent.putExtras(bundle);
-		startActivityForResult(newIntent, 0);
-	}
-	
-	private class LocationDownloader extends AsyncTask<String, Void, ArrayList<Location>>
-	{
+	private class PagerAdapter extends FragmentPagerAdapter {
+
+		public PagerAdapter(FragmentManager fm) {
+			super(fm);
+			LocationChooserActivity.this.fragments = fragments;
+		}
 
 		@Override
-		protected ArrayList<Location> doInBackground(String... params) {
-			try {
-				locations = ParserGeoLookup
-				.getData("http://autocomplete.wunderground.com/aq?query=" + params[0] + "&format=xml&c=FR");
-				lStrings = new ArrayList<String>();
-				for (Location l : locations)
-					lStrings.add(l.getName());
-				return (ArrayList<Location>) locations;
-			} catch (IOException e) {
-				return null;
-			}
-			
+		public Fragment getItem(int position) {
+			return LocationChooserActivity.this.fragments.get(position);
 		}
-		protected void onPostExecute(ArrayList<Location> result) {
-			if (lStrings.size() != 0)
-				((ListView) findViewById(R.id.listView1)).setAdapter(
-						new ArrayAdapter<String>(LocationChooserActivity.this, android.R.layout.simple_list_item_1, lStrings));
-			else
-				Toast.makeText(getApplicationContext(), "Aucune ville trouvée",
-						Toast.LENGTH_SHORT).show();
+
+		@Override
+		public int getCount() {
+			return LocationChooserActivity.this.fragments.size();
 		}
-		
+
 	}
 }
