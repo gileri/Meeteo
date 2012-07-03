@@ -1,101 +1,96 @@
 package fr.badgers.meeteo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+import fr.badgers.meeteo.MeeteoFragment.LocationSource;
 
-public class MeeteoActivity extends Activity {
+public class MeeteoActivity extends FragmentActivity implements LocationSource,
+		LocationReceiver {
 
-	TextView tempview = null;
-	Button b = null;
-	ImageView image;
-	Condition condition;
-	Toast toast;
-	Bundle bu;
-	Location l;
-	ListView cool;
-	ConditionArrayAdapter ad;
+	private Toast Toast;
+	private ViewPager mViewPager;
+	public List<Fragment> fragments;
+	private PagerAdapter mPagerAdapter;
+	private Location currLocation;
+	private boolean searchselected;
 
-	private OnClickListener appuibouton = new OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-			new ConditionDownloader().execute(l);
-		}
-	};
-
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		super.setContentView(R.layout.main);
+		fragments = new Vector<Fragment>();
+		fragments.add(Fragment.instantiate(this,
+				SearchLocationFragment.class.getName()));
+		fragments.add(Fragment.instantiate(this,
+				SavedLocationsFragment.class.getName()));
+		fragments
+				.add(Fragment.instantiate(this, MeeteoFragment.class.getName()));
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
+		mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager());
+		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager.setCurrentItem(1);
+//		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+//
+//			@Override
+//			public void onPageSelected(int arg0) {
+//				if (arg0 == 0)
+//					searchselected = true;
+//				else if (searchselected) {
+//					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//					imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
+//					searchselected = false;
+//				}
+//			}
+//
+//			@Override
+//			public void onPageScrolled(int arg0, float arg1, int arg2) {
+//
+//			}
+//
+//			@Override
+//			public void onPageScrollStateChanged(int arg0) {
+//
+//			}
+//		});
+	}
 
-		if (this.getIntent().getExtras() != null) {
-			bu = this.getIntent().getExtras();
-			l = (Location) bu.get("location");
+	private class PagerAdapter extends FragmentPagerAdapter {
+
+		public PagerAdapter(FragmentManager fm) {
+			super(fm);
+			MeeteoActivity.this.fragments = fragments;
 		}
-
-		setContentView(R.layout.forecast);
-		Button b = (Button) findViewById(R.id.button1);
-		b.setOnClickListener(appuibouton);
-		cool = (ListView) findViewById(R.id.listView1);
-
-	}
-
-	protected Dialog onCreateDialog(int id) {
-		return DialogFactory.createDialog(this, id);
-
-	}
-
-	private class ConditionDownloader extends
-			AsyncTask<Location, Void, Condition> {
 
 		@Override
-		protected Condition doInBackground(Location... arg0) {
-			ArrayList<Condition> entries;
-			try {
-				entries = Parser
-						.getData("http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/"
-								+ arg0[0].getLink() + ".xml");
-				Condition entry = entries.get(0);
-				entry.setLastRefresh(new Date());
-				entry.setImage(Downloader.getBitmap(entries.get(0)
-						.getImageurlstring()));
-				List<Condition> forecastlist = new ArrayList<Condition>();
-				forecastlist.add(entry);
-				forecastlist.add(entry);
-				ad = new ConditionArrayAdapter(MeeteoActivity.this,
-						R.layout.condition, forecastlist);
-				return entry;
-			} catch (IOException e) {
-				Toast.makeText(MeeteoActivity.this,
-						"Erreur lors de la récupération de données",
-						Toast.LENGTH_SHORT).show();
-				return null;
-			} catch (ConnexionException e) {
-				Toast.makeText(MeeteoActivity.this,
-						"Erreur lors de la récupération de données",
-						Toast.LENGTH_SHORT).show();
-				return null;
-			}
+		public Fragment getItem(int position) {
+			return MeeteoActivity.this.fragments.get(position);
 		}
 
-		protected void onPostExecute(Condition c) {
-			Toast.makeText(MeeteoActivity.this, "Données actualisées",
-					Toast.LENGTH_SHORT).show();
-			cool.setAdapter(ad);
+		@Override
+		public int getCount() {
+			return MeeteoActivity.this.fragments.size();
 		}
+
+	}
+
+	@Override
+	public Location getSelectedLocation() {
+		return currLocation;
+	}
+
+	@Override
+	public void selectLocation(Location l) {
+		currLocation = l;
 	}
 }

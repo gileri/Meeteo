@@ -7,14 +7,16 @@
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="64dip" >
 
         <EditText
             android:id="@+id/searchlocationfield"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.48"
-            android:hint="@string/hintsearchlocation" >
+            android:layout_height="fill_parent"
+            android:layout_weight="1.50"
+            android:hint="@string/hintsearchlocation"
+            android:imeOptions="actionSearch"
+            android:inputType="text" >
 
             <requestFocus />
         </EditText>
