@@ -16,7 +16,9 @@
             android:layout_weight="1.50"
             android:hint="@string/hintsearchlocation"
             android:imeOptions="actionSearch"
-            android:inputType="text" >
+            android:inputType="text"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
 
             <requestFocus />
         </EditText>

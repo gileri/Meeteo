@@ -40,29 +40,31 @@ public class MeeteoActivity extends FragmentActivity implements LocationSource,
 		mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setCurrentItem(1);
-//		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
-//
-//			@Override
-//			public void onPageSelected(int arg0) {
-//				if (arg0 == 0)
-//					searchselected = true;
-//				else if (searchselected) {
-//					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int arg0) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (arg0 == 0) {
+					searchselected = true;
+				}
+				else if (searchselected) {
+					imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
 //					imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
-//					searchselected = false;
-//				}
-//			}
-//
-//			@Override
-//			public void onPageScrolled(int arg0, float arg1, int arg2) {
-//
-//			}
-//
-//			@Override
-//			public void onPageScrollStateChanged(int arg0) {
-//
-//			}
-//		});
+					searchselected = false;
+				}
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+		});
 	}
 
 	private class PagerAdapter extends FragmentPagerAdapter {

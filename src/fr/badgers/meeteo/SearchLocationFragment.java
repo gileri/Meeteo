@@ -189,5 +189,5 @@ public class SearchLocationFragment extends Fragment {
 		super.onDestroyView();
 		v = null;
 	}
-
+	
 }
