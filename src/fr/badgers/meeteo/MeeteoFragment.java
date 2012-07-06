@@ -93,7 +93,8 @@ public class MeeteoFragment extends Fragment {
 			ArrayList<Condition> entries;
 			try {
 				entries = Parser
-						.getData("http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/"
+						.getData(
+                            "http://api.wunderground.com/api/336d055766c22b31/conditions/lang:FR/"
 								+ arg0[0].getLink() + ".xml");
 				Condition entry = entries.get(0);
 				entry.setLastRefresh(new Date());
