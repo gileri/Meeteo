@@ -15,13 +15,13 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-public class ParserGeoLookup {
-	static public ParserGeoLookup parser;
+public class ParserAutocomplete {
+	static public ParserAutocomplete parser;
 	
 	private static URL url = null;
 	//private DefaultHandler handler;
 	
-	public ParserGeoLookup(String urlString){
+	public ParserAutocomplete(String urlString){
 	}
 	
 	public static ArrayList getData(String urlString) throws IOException{
@@ -45,7 +45,7 @@ public class ParserGeoLookup {
 			e1.printStackTrace();
 		}
 		
-		DefaultHandler handler = new ParserXMLHandlerGeoLookup();
+		DefaultHandler handler = new ParserXMLHandlerAutocomplete();
 		try {
 			// On parse le fichier XML
 			InputStream input = url.openStream();
@@ -54,7 +54,7 @@ public class ParserGeoLookup {
 			else{
 				parser.parse(input, handler);
 				// On récupère directement la liste des feeds
-				entries = ((ParserXMLHandlerGeoLookup) handler).getData();
+				entries = ((ParserXMLHandlerAutocomplete) handler).getData();
 			}
 		} catch (SAXException e) {
 			Log.e("meeteo", "FUUUU1");

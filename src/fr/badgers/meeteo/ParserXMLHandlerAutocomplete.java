@@ -1,27 +1,23 @@
 package fr.badgers.meeteo;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-@SuppressWarnings("unused")
-public class ParserXMLHandlerCC extends DefaultHandler {
+public class ParserXMLHandlerAutocomplete extends DefaultHandler {
 
-	private final String CURR = "current_observation";
-	private final String TEMP_C = "temp_c";
-	private final String URLIMAGE = "icon_url";
-	private final String WEATHER = "weather";
+	private final String ERROR = "error";
+	private final String LINK = "l";
+	private final String CITY = "name";
+	private final String COUNTRY= "c";
+	
+	private ArrayList<Location> entries;
 
-	private ArrayList<Condition> entries;
+	private Location currentLocation;
 
-	private Condition currentWeather;
-
-	// Boolean to know if we're in an item
-	private boolean inCurr;
-	private boolean inTemp;
+	private boolean error;
 
 	// Buffer for data in XML tag
 	private StringBuffer buffer;
@@ -32,7 +28,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		super.processingInstruction(target, data);
 	}
 
-	public ParserXMLHandlerCC() {
+	public ParserXMLHandlerAutocomplete() {
 		super();
 	}
 
@@ -46,7 +42,7 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		entries = new ArrayList<Condition>();
+		entries = new ArrayList<Location>();
 	}
 
 	/*
@@ -60,13 +56,12 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		// Nous réinitialisons le buffer a chaque fois qu'il rencontre un item
 		buffer = new StringBuffer();
 
-		// Ci dessous, localName contient le nom du tag rencontré
-
-		// Nous avons rencontré un tag ITEM, il faut donc instancier un nouveau
-		// feed
-		if (localName.equalsIgnoreCase(CURR)) {
-			inCurr = true;
-			currentWeather = new Condition();
+		if (localName.equalsIgnoreCase(ERROR)) {
+			error = true;
+		}
+		
+		if (localName.equalsIgnoreCase(CITY)) {
+			currentLocation = new Location();
 		}
 	}
 
@@ -88,29 +83,21 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 		// buffer = null;
 		// }
 		// }
-
-		if (localName.equalsIgnoreCase(TEMP_C)) {
-			currentWeather.setTemperature(Float.valueOf(buffer.toString()));
-			inTemp = false;
-		}
-		
-		if (localName.equalsIgnoreCase(URLIMAGE))
+		if (localName.equalsIgnoreCase(CITY))
 		{
-			currentWeather.setImageUrlString(buffer.toString());
+			currentLocation.setName(buffer.toString());
 		}
 		
-		if (localName.equalsIgnoreCase(WEATHER))
+		if (localName.equalsIgnoreCase(COUNTRY))
 		{
-			currentWeather.setDescription(buffer.toString());
-		}
-
-		if (localName.equalsIgnoreCase(CURR)) {
-			inCurr = false;
-			this.entries.add(currentWeather);
+			currentLocation.setCountry(buffer.toString());
 		}
 		
-		if(localName.equalsIgnoreCase("local_time_rfc822"))
-			currentWeather.setDate(new Date(buffer.toString()));
+		if (localName.equalsIgnoreCase(LINK))
+		{
+			currentLocation.setLink(buffer.toString());
+			entries.add(currentLocation);
+		}
 	}
 
 	// * Tout ce qui est dans l'arborescence mais n'est pas partie
@@ -127,7 +114,9 @@ public class ParserXMLHandlerCC extends DefaultHandler {
 	}
 
 	// cette méthode nous permettra de récupérer les données
-	public ArrayList<Condition> getData() {
+	public ArrayList<Location> getData() {
+		if (error)
+			return null;
 		return entries;
 	}
 }

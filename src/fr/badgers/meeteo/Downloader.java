@@ -28,7 +28,7 @@ public class Downloader {
 	
 	public static ArrayList<Location> getLocations(String query) throws ConnexionException {
 		try {
-			return ParserGeoLookup
+			return ParserAutocomplete
 					.getData("http://autocomplete.wunderground.com/aq?query=" + query + "&format=xml&c=FR");
 		} catch (IOException e) {
 			throw new ConnexionException();

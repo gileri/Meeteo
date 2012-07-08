@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,11 +17,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,6 +36,8 @@ public class SearchLocationFragment extends Fragment {
 	public Location currentLocation;
 	private LocationReceiver mCallback;
 	private View v;
+	private SharedPreferences settings;
+	public static final String PREFS_NAME = "MeeteoSavedLocations";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +45,7 @@ public class SearchLocationFragment extends Fragment {
 
 		if (locations == null)
 			locations = new ArrayList<Location>();
-		if(v == null)
+		if (v == null)
 			v = inflater.inflate(R.layout.locationsearcher, container, false);
 		((EditText) v.findViewById(R.id.searchlocationfield))
 				.addTextChangedListener(new TextWatcher() {
@@ -102,6 +103,21 @@ public class SearchLocationFragment extends Fragment {
 
 					}
 				});
+
+		locationView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				initSP();
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putInt("count", 1);
+				editor.putString("link0", locations.get(arg2).getLink());
+				editor.commit();
+				((UpdateSP) mCallback).updateSP();
+				return true;
+			}
+		});
 		la = new LocationAdapter();
 		locationView.setAdapter(la);
 		return v;
@@ -127,7 +143,7 @@ public class SearchLocationFragment extends Fragment {
 		@Override
 		protected ArrayList<Location> doInBackground(String... params) {
 			try {
-				locations = ParserGeoLookup
+				locations = ParserAutocomplete
 						.getData("http://autocomplete.wunderground.com/aq?query="
 								+ params[0] + "&format=xml&c=FR");
 				return (ArrayList<Location>) locations;
@@ -183,11 +199,19 @@ public class SearchLocationFragment extends Fragment {
 		}
 
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
 		v = null;
 	}
+
+	private void initSP() {
+		if (settings == null)
+			settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+	}
 	
+	public interface UpdateSP {
+		public void updateSP();
+	}
 }

@@ -6,12 +6,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class ParserXMLHandlerGeoLookup extends DefaultHandler {
+public class ParserXMLHandlerGeolookup extends DefaultHandler {
 
 	private final String ERROR = "error";
 	private final String LINK = "l";
-	private final String CITY = "name";
-	private final String COUNTRY= "c";
+	private final String CITY = "city";
+	private final String COUNTRY= "country";
+	private boolean inLocation = false;
 	
 	private ArrayList<Location> entries;
 
@@ -28,7 +29,7 @@ public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 		super.processingInstruction(target, data);
 	}
 
-	public ParserXMLHandlerGeoLookup() {
+	public ParserXMLHandlerGeolookup() {
 		super();
 	}
 
@@ -60,9 +61,13 @@ public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 			error = true;
 		}
 		
-		if (localName.equalsIgnoreCase(CITY)) {
+		if(localName.equalsIgnoreCase("location")) {
 			currentLocation = new Location();
+			inLocation = true;
 		}
+		
+		if (localName.equalsIgnoreCase("nearby_weather_stations"))
+			inLocation = false;
 	}
 
 	// * Fonction étant déclenchée lorsque le parser à parsé
@@ -83,21 +88,26 @@ public class ParserXMLHandlerGeoLookup extends DefaultHandler {
 		// buffer = null;
 		// }
 		// }
-		if (localName.equalsIgnoreCase(CITY))
+		if (localName.equalsIgnoreCase(CITY) && inLocation)
 		{
 			currentLocation.setName(buffer.toString());
 		}
 		
-		if (localName.equalsIgnoreCase(COUNTRY))
+		if (localName.equalsIgnoreCase(COUNTRY) && inLocation)
 		{
 			currentLocation.setCountry(buffer.toString());
 		}
 		
-		if (localName.equalsIgnoreCase(LINK))
+		if (localName.equalsIgnoreCase(LINK) && inLocation)
 		{
 			currentLocation.setLink(buffer.toString());
+		}
+		
+		if (localName.equalsIgnoreCase("location")) {
+			inLocation = false;
 			entries.add(currentLocation);
 		}
+			
 	}
 
 	// * Tout ce qui est dans l'arborescence mais n'est pas partie

@@ -14,9 +14,10 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import fr.badgers.meeteo.MeeteoFragment.LocationSource;
+import fr.badgers.meeteo.SearchLocationFragment.UpdateSP;
 
 public class MeeteoActivity extends FragmentActivity implements LocationSource,
-		LocationReceiver {
+		LocationReceiver, UpdateSP {
 
 	private Toast Toast;
 	private ViewPager mViewPager;
@@ -94,5 +95,10 @@ public class MeeteoActivity extends FragmentActivity implements LocationSource,
 	@Override
 	public void selectLocation(Location l) {
 		currLocation = l;
+	}
+
+	@Override
+	public void updateSP() {
+		((UpdateSP) fragments.get(1)).updateSP();
 	}
 }

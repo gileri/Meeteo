@@ -15,19 +15,19 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-public class Parser {
-	static public Parser parser;
+public class ParserGeolookup {
+	static public ParserGeolookup parser;
 	
 	private static URL url = null;
 	//private DefaultHandler handler;
 	
-	public Parser(String urlString){
+	public ParserGeolookup(String urlString){
 	}
 	
-	public static ArrayList<Condition> getData(String urlString) throws IOException{
+	public static ArrayList getData(String link) throws IOException{
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser = null;
-		ArrayList<Condition> entries = null;
+		ArrayList entries = null;
 		try{
 			parser = factory.newSAXParser();
 			
@@ -40,12 +40,12 @@ public class Parser {
 		}
 		
 		try {
-			url = new URL(urlString);
+			url = new URL("http://api.wunderground.com/api/336d055766c22b31/geolookup/lang:FR/" + link + ".xml");
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
 		
-		DefaultHandler handler = new ParserXMLHandlerCC();
+		DefaultHandler handler = new ParserXMLHandlerGeolookup();
 		try {
 			// On parse le fichier XML
 			InputStream input = url.openStream();
@@ -54,9 +54,10 @@ public class Parser {
 			else{
 				parser.parse(input, handler);
 				// On récupère directement la liste des feeds
-				entries = ((ParserXMLHandlerCC) handler).getData();
+				entries = ((ParserXMLHandlerGeolookup) handler).getData();
 			}
 		} catch (SAXException e) {
+			Log.e("meeteo", "FUUUU1");
 			e.printStackTrace();
 		}
 		return entries;
